@@ -1,27 +1,40 @@
-/* lodash.compact */
-function compact(array) {
-	var index = -1,
-			length = array == null ? 0 : array.length,
-			resIndex = 0,
-			result = [];
+const special = {
+	"backgroundColor": "gc"
+}
 
-	while (++index < length) {
-		var value = array[index];
-		if (value) {
-			result[resIndex++] = value;
+const variable = [
+  "color",
+  "backgroundColor",
+  "borderColor",
+]
+
+function prop(p) {
+	if (special[p]) return special[p];
+	return p.toString().replace(/([A-Z])/g, ' $1').split(' ').map(w => w.charAt(0).toLowerCase()).join("")
+}
+
+function key(k) {
+  const splitKey = k.toString().match(/([\d\.]+|[^\d\.]+)/g);
+  return (splitKey[0] !== 0 ? splitKey[0].replace(/^0\./, '.') : "") +
+    (splitKey[1] ? splitKey[1].charAt(0) : "");
+}
+
+module.exports = function(style) {
+  const keys = Object.keys(style);
+
+  if (keys.length === 0) {
+    return "";
+  }
+
+  const classes = [];
+
+  Object.keys(style).forEach(d => {
+		if (variable.indexOf(d) !== -1 ) {
+	    return classes.push(`${prop(d)}-${style[d]}`);
 		}
-	}
-	return result;
-}
 
-module.exports = function (minionClassNames) {
-  return compact([
-    typeof minionClassNames === "object" && typeof minionClassNames.mn === "string" && minionClassNames.mn.split(" ").map(c => `${c}@mn`).join(" "),
-    typeof minionClassNames === "object" && typeof minionClassNames.xs === "string" && minionClassNames.xs.split(" ").map(c => `${c}@xs`).join(" "),
-    typeof minionClassNames === "object" && typeof minionClassNames.sm === "string" && minionClassNames.sm.split(" ").map(c => `${c}@sm`).join(" "),
-    typeof minionClassNames === "object" && typeof minionClassNames.md === "string" && minionClassNames.md.split(" ").map(c => `${c}@md`).join(" "),
-    typeof minionClassNames === "object" && typeof minionClassNames.lg === "string" && minionClassNames.lg.split(" ").map(c => `${c}@lg`).join(" "),
-    typeof minionClassNames === "object" && typeof minionClassNames.xl === "string" && minionClassNames.xl.split(" ").map(c => `${c}@xl`).join(" "),
-    typeof minionClassNames === "object" && typeof minionClassNames.mx === "string" && minionClassNames.mx.split(" ").map(c => `${c}@mx`).join(" "),
-  ]).join(' ').trim()
-}
+    return classes.push(`${prop(d)}-${key(style[d])}`);
+  });
+
+  return classes.join(' ').trim();
+};
