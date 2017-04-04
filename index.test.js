@@ -16,6 +16,20 @@ test("returns minion-style classes for basic declarations", () => {
   expect(m({ opacity: 0.5 })).toBe("o-.5");
 });
 
+test("multiple properties", () => {
+	const subject = {
+		margin: "1rem",
+		padding: ".5rem",
+		borderWidth: "1px",
+		borderColor: "red",
+		width: "100%",
+		':hover': {
+			backgroundColor: "blue",
+		}
+	}
+  expect(m(subject)).toBe("m-1r p-.5r bw-1p bc-red w-100% gc-blue:h");
+});
+
 test("works with cameled props", () => {
   expect(m({ borderRightWidth: "1rem" })).toBe("brw-1r");
   expect(m({ borderRightWidth: 0 })).toBe("brw-0");
@@ -27,6 +41,11 @@ test("handles special naming cases", () => {
   expect(m({ backgroundColor: "red" })).toBe("gc-red");
   expect(m({ borderColor: "blue" })).toBe("bc-blue");
   expect(m({ color: "pink" })).toBe("c-pink");
+});
+
+test("handles :hover", () => {
+  expect(m({':hover': { backgroundColor: "red" }})).toBe("gc-red:h");
+  expect(m({':hover': { opacity: ".5" }})).toBe("o-.5:h");
 });
 
 /* TODO

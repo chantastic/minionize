@@ -29,6 +29,19 @@ module.exports = function(style) {
   const classes = [];
 
   Object.keys(style).forEach(d => {
+
+		if (typeof style[d] === 'object') {
+		  Object.keys(style[d]).forEach(e => {
+				if (variable.indexOf(d) !== -1 ) {
+			    return classes.push(`${prop(d)}-${style[d]}`);
+				}
+
+		    return classes.push(`${prop(e)}-${key(style[d][e])}:h`);
+			})
+
+			return classes
+		}
+
 		if (variable.indexOf(d) !== -1 ) {
 	    return classes.push(`${prop(d)}-${style[d]}`);
 		}
