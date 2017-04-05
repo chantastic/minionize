@@ -59,6 +59,19 @@ test("handles suffixes", () => {
   expect(m({'@print': { backgroundColor: "red" }})).toBe("gc-red@print");
 });
 
+test("handles other supported suffixes", () => {
+  expect(m({':^h': { backgroundColor: "red" }})).toBe("gc-red:^h");
+  expect(m({':a': { backgroundColor: "red" }})).toBe("gc-red:a");
+  expect(m({':fc': { backgroundColor: "red" }})).toBe("gc-red:fc");
+  expect(m({':lc': { backgroundColor: "red" }})).toBe("gc-red:lc");
+  expect(m({':b': { backgroundColor: "red" }})).toBe("gc-red:b");
+  expect(m({':n(even)': { backgroundColor: "red" }})).toBe("gc-red:n(even)");
+  expect(m({':n(odd)': { backgroundColor: "red" }})).toBe("gc-red:n(odd)");
+  expect(m({'@!md': { width: "25%" }})).toBe("w-25%@!md");
+  expect(m({'@=md': { width: "25%" }})).toBe("w-25%@=md");
+  expect(m({'@!=md': { width: "25%" }})).toBe("w-25%@!=md");
+});
+
 test("handles !important", () => {
   expect(m({ backgroundColor: "red !important" })).toBe("gc-red!");
   expect(m({ margin: "1rem !important" })).toBe("m-1r!");
