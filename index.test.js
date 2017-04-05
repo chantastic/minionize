@@ -59,6 +59,15 @@ test("handles suffixes", () => {
   expect(m({'@print': { backgroundColor: "red" }})).toBe("gc-red@print");
 });
 
+test("handles !important", () => {
+  expect(m({ backgroundColor: "red !important" })).toBe("gc-red!");
+  expect(m({ margin: "1rem !important" })).toBe("m-1r!");
+  expect(m({ padding: ".5rem !important" })).toBe("p-.5r!");
+	// not sure if i want to support this with the other matchers
+	// ! should not be used with mqs
+  // expect(m({ "@sm": { padding: ".5rem !important" }})).toBe("p-.5r!");
+});
+
 
 /* TODO
  * negative values { order: -1 } => o-n1

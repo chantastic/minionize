@@ -26,10 +26,20 @@ module.exports = function(style) {
     const firstChar = str => str.charAt(0);
 
     if (matches.length > 1) {
+      if (matches[1].indexOf("!") !== -1) {
+	      return `${remove0(matches[0])}${firstChar(matches[1])}!`;
+			}
+
       return `${remove0(matches[0])}${firstChar(matches[1])}`;
     }
 
     if (variable.indexOf(matches[0]) === -1) {
+      if (matches[0].indexOf("!") !== -1) {
+        return `${remove0([matches[0]]
+            .map(e => e.replace(" ", ""))
+            .map(e => e.slice(0, e.indexOf("!") + 1))[0])}`;
+      }
+
       return `${remove0(matches[0])}`;
     }
 
