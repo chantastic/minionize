@@ -6,6 +6,7 @@ test("takes an object, returns a string", () => {
 
 test("returns minion-style classes for basic declarations", () => {
   expect(m({ margin: "1rem" })).toBe("m-1r");
+  expect(m({ margin: "0.5rem" })).toBe("m-.5r");
   expect(m({ margin: 0 })).toBe("m-0");
   expect(m({ padding: "12px" })).toBe("p-12p");
   expect(m({ padding: 0 })).toBe("p-0");
@@ -23,7 +24,7 @@ test("multiple properties", () => {
 		borderWidth: "1px",
 		borderColor: "red",
 		width: "100%",
-		':hover': {
+		':h': {
 			backgroundColor: "blue",
 		}
 	}
@@ -43,10 +44,21 @@ test("handles special naming cases", () => {
   expect(m({ color: "pink" })).toBe("c-pink");
 });
 
-test("handles :hover", () => {
-  expect(m({':hover': { backgroundColor: "red" }})).toBe("gc-red:h");
-  expect(m({':hover': { opacity: ".5" }})).toBe("o-.5:h");
+test("handles suffixes", () => {
+  expect(m({':h': { backgroundColor: "red" }})).toBe("gc-red:h");
+  expect(m({':h': { opacity: ".5" }})).toBe("o-.5:h");
+  expect(m({'@mn': { backgroundColor: "red" }})).toBe("gc-red@mn");
+  expect(m({'@xs': { backgroundColor: "red" }})).toBe("gc-red@xs");
+  expect(m({'@sm': { backgroundColor: "red" }})).toBe("gc-red@sm");
+  expect(m({'@md': { backgroundColor: "red" }})).toBe("gc-red@md");
+  expect(m({'@lg': { backgroundColor: "red" }})).toBe("gc-red@lg");
+  expect(m({'@xl': { backgroundColor: "red" }})).toBe("gc-red@xl");
+  expect(m({'@420p': { backgroundColor: "red" }})).toBe("gc-red@420p");
+  expect(m({'@768p': { backgroundColor: "red" }})).toBe("gc-red@768p");
+  expect(m({'@30e': { backgroundColor: "red" }})).toBe("gc-red@30e");
+  expect(m({'@print': { backgroundColor: "red" }})).toBe("gc-red@print");
 });
+
 
 /* TODO
  * negative values { order: -1 } => o-n1

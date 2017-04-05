@@ -1,53 +1,53 @@
 const special = {
-	"backgroundColor": "gc"
-}
+  backgroundColor: "gc"
+};
 
-const variable = [
-  "color",
-  "backgroundColor",
-  "borderColor",
-]
-
-function prop(p) {
-	if (special[p]) return special[p];
-	return p.toString().replace(/([A-Z])/g, ' $1').split(' ').map(w => w.charAt(0).toLowerCase()).join("")
-}
-
-function key(k) {
-  const splitKey = k.toString().match(/([\d\.]+|[^\d\.]+)/g);
-  return (splitKey[0] !== 0 ? splitKey[0].replace(/^0\./, '.') : "") +
-    (splitKey[1] ? splitKey[1].charAt(0) : "");
-}
+const variable = ["color", "backgroundColor", "borderColor"];
 
 module.exports = function(style) {
   const keys = Object.keys(style);
 
-  if (keys.length === 0) {
-    return "";
-  }
+  const selector = (p, k, suffix = "", combinator = "-") =>
+    `${p}${combinator}${k}${suffix}`;
 
-  const classes = [];
+  const prop = p => // assumes string (add flow)
+    special[p]
+      ? special[p]
+      : p
+          .replace(/([A-Z])/g, " $1")
+          .split(" ")
+          .map(w => w.charAt(0).toLowerCase())
+          .join("");
 
-  Object.keys(style).forEach(d => {
+  const key = k => {
+    // assumes string (add flow)
+    const matches = k.match(/([\d\.]+|[^\d\.]+)/g);
+    const remove0 = str => str.replace(/^0\./, ".");
+    const firstChar = str => str.charAt(0);
 
-		if (typeof style[d] === 'object') {
-		  Object.keys(style[d]).forEach(e => {
-				if (variable.indexOf(d) !== -1 ) {
-			    return classes.push(`${prop(d)}-${style[d]}`);
-				}
+    if (matches.length > 1) {
+      return `${remove0(matches[0])}${firstChar(matches[1])}`;
+    }
 
-		    return classes.push(`${prop(e)}-${key(style[d][e])}:h`);
-			})
+    if (variable.indexOf(matches[0]) === -1) {
+      return `${remove0(matches[0])}`;
+    }
 
-			return classes
-		}
+    return `${firstChar(remove0(matches[0]))}`;
+  };
 
-		if (variable.indexOf(d) !== -1 ) {
-	    return classes.push(`${prop(d)}-${style[d]}`);
-		}
+  const processObject = ([p, k]) => {
+    return Object.entries(k).map(e => selector(prop(e[0]), key(e[1]), p));
+  };
 
-    return classes.push(`${prop(d)}-${key(style[d])}`);
+  // TODO: this could be made recursive
+  const classes = Object.entries(style).map(e => {
+    if (typeof e[1] !== "object") {
+      return selector(prop(e[0]), key(e[1].toString()));
+    }
+
+    return processObject(e);
   });
 
-  return classes.join(' ').trim();
+  return classes.join(" ").trim();
 };
