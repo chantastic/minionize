@@ -27,8 +27,8 @@ module.exports = function(style) {
 
     if (matches.length > 1) {
       if (matches[1].indexOf("!") !== -1) {
-	      return `${remove0(matches[0])}${firstChar(matches[1])}!`;
-			}
+        return `${remove0(matches[0])}${firstChar(matches[1])}!`;
+      }
 
       return `${remove0(matches[0])}${firstChar(matches[1])}`;
     }
@@ -47,6 +47,10 @@ module.exports = function(style) {
   };
 
   const processObject = ([p, k]) => {
+		if (p === "children") {
+	    return Object.entries(k).map(e => selector(prop(e[0]), key(e[1]), "", "_"));
+		}
+
     return Object.entries(k).map(e => selector(prop(e[0]), key(e[1]), p));
   };
 
@@ -56,7 +60,7 @@ module.exports = function(style) {
       return selector(prop(e[0]), key(e[1].toString()));
     }
 
-    return processObject(e);
+    return processObject(e).join(' ');
   });
 
   return classes.join(" ").trim();
