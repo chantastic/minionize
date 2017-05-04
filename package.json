@@ -1,6 +1,6 @@
 {
   "name": "minionize",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "media-query helper for minions.css",
   "main": "index.js",
   "scripts": {
